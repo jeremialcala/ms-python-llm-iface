@@ -231,32 +231,25 @@ class Llama:
         max_gen_len: Optional[int] = None,
         logprobs: bool = False,
     ) -> List[ChatPrediction]:
+
         if max_gen_len is None:
             max_gen_len = self.model.params.max_seq_len - 1
+
         prompt_tokens = []
+
         for dialog in dialogs:
             if dialog[0]["role"] != "system":
-                dialog = [
-                    {
-                        "role": "system",
-                        "content": DEFAULT_SYSTEM_PROMPT,
-                    }
-                ] + dialog
-            dialog = [
-                {
-                    "role": dialog[1]["role"],
-                    "content": B_SYS
-                    + dialog[0]["content"]
-                    + E_SYS
-                    + dialog[1]["content"],
-                }
-            ] + dialog[2:]
+                dialog = [{"role": "system","content": DEFAULT_SYSTEM_PROMPT,}] + dialog
+
+            dialog = [{"role": dialog[1]["role"],"content": B_SYS + dialog[0]["content"] + E_SYS + dialog[1]["content"],}] + dialog[2:]
+
             assert all([msg["role"] == "user" for msg in dialog[::2]]) and all(
                 [msg["role"] == "assistant" for msg in dialog[1::2]]
             ), (
                 "model only supports 'system', 'user' and 'assistant' roles, "
                 "starting with 'system', then 'user' and alternating (u/a/u/a/u...)"
             )
+
             dialog_tokens: List[int] = sum(
                 [
                     self.tokenizer.encode(
@@ -264,6 +257,7 @@ class Llama:
                         bos=True,
                         eos=True,
                     )
+
                     for prompt, answer in zip(
                         dialog[::2],
                         dialog[1::2],
@@ -271,14 +265,17 @@ class Llama:
                 ],
                 [],
             )
+
             assert (
                 dialog[-1]["role"] == "user"
             ), f"Last message must be from user, got {dialog[-1]['role']}"
+
             dialog_tokens += self.tokenizer.encode(
                 f"{B_INST} {(dialog[-1]['content']).strip()} {E_INST}",
                 bos=True,
                 eos=False,
             )
+
             prompt_tokens.append(dialog_tokens)
 
         generation_tokens, generation_logprobs = self.generate(
@@ -288,6 +285,7 @@ class Llama:
             top_p=top_p,
             logprobs=logprobs,
         )
+
         if logprobs:
             return [
                 {

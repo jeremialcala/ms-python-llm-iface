@@ -18,15 +18,16 @@ alpha_numeric = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm'
 def timeit(func):
     @wraps(func)
     def timeit_wrapper(*args, **kwargs):
-        print(f'Starting {func.__name__}')
+        log.info(f'Starting {func.__name__}')
         start_time = time.perf_counter()
         result = func(*args, **kwargs)
         end_time = time.perf_counter()
         total_time = end_time - start_time
-        print(f'Function {func.__name__} completed total time:{total_time:.4f} seconds')
+        log.info(f'Function {func.__name__} completed total time:{total_time:.4f} seconds')
         return result
 
     return timeit_wrapper
+
 
 def generate_code(size=32):
     key = ""

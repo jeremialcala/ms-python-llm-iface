@@ -42,6 +42,6 @@ class Settings(BaseSettings):
     max_memory: str
     queue_name: str
 
-    model_name: str
+    llm_model_name: str
 
     model_config = SettingsConfigDict(env_file="config.env")

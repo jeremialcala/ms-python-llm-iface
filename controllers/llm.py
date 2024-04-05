@@ -17,7 +17,7 @@ logging.config.dictConfig(configure_logging())
 @timeit
 def get_llm_elements(use_cuda=False):
     log.info(f"Starting: {currentframe().f_code.co_name}")
-    model_name = _set.model_name
+    model_name = _set.llm_model_name
 
     log.info("creating tokenizer...")
     tokenizer = AutoTokenizer.from_pretrained(model_name)

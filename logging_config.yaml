@@ -28,7 +28,7 @@ loggers:
 
     staging:
         level: INFO
-        handlers: [console, file]
+        handlers: [console]
         propagate: no
 
     production:
